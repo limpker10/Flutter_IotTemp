@@ -8,5 +8,5 @@ double normalize(value, min, max) => ((value - min) / (max - min));
 
 const Color kScaffoldBackgroundColor = Color(0xFFF3FBFA);
 const double kDiameter = 300;
-const double kMinDegree = 16;
-const double kMaxDegree = 28;
+const double kMinDegree = 0;
+const double kMaxDegree = 100;

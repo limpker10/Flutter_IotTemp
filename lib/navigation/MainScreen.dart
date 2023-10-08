@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../providers//mqtt_service.dart';
 import '../screens/circular_screen.dart';
+import '../screens/message_screen.dart';
 import '../screens/motors_view.dart';
 import '../screens/users_view.dart';
 
@@ -14,11 +16,13 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int selectedIndex = 0;
 
+
   @override
   Widget build(BuildContext context) {
+
     final colors = Theme.of(context).colorScheme;
 
-    final screens = [const MotorsView(), const UsersView(),const CircularPage()];
+    final screens = [const MotorsView(), const UsersView(),const CircularPage(), const MqttScreen()];
 
     return Scaffold(
 
@@ -53,6 +57,12 @@ class _MainScreenState extends State<MainScreen> {
             icon: const Icon(Icons.person_3_outlined),
             activeIcon: const Icon(Icons.person_3),
             label: 'Users',
+            backgroundColor: colors.tertiary,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.person_3_outlined),
+            activeIcon: const Icon(Icons.person_3),
+            label: 'Mqtt',
             backgroundColor: colors.tertiary,
           ),
         ],

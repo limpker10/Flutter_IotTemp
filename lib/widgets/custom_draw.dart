@@ -1,11 +1,12 @@
 import 'dart:math';
 import 'dart:ui';
 
-
 import 'package:flutter/material.dart';
 import 'package:iot_temp_app/widgets/utils.dart';
 
 class CustomArc extends StatelessWidget {
+  const CustomArc({super.key});
+
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
