@@ -12,18 +12,20 @@ class _MotorsViewState extends State<MotorsView> {
 
   @override
   Widget build(BuildContext context) {
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text('Current motors: $count'),
           FilledButton.tonal(
-              onPressed: () {
-                setState(() {
-                  count++;
-                });
-              },
-              child: const Icon(Icons.add)),
+            onPressed: () {
+              setState(() {
+                count++;
+              });
+            },
+            child: const Icon(Icons.add),
+          ),
         ],
       ),
     );

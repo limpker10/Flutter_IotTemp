@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 import '../providers/mqtt_service.dart';
-
+import '../widgets/utils.dart';
 
 class MqttScreen extends StatefulWidget {
   const MqttScreen({super.key});
@@ -12,11 +15,30 @@ class MqttScreen extends StatefulWidget {
 
 class _MqttScreenState extends State<MqttScreen> {
   final MqttService _mqttProvider = MqttService();
+  double temperature = 0.0; // Variable para almacenar la temperatura
+  int humedad = 0; // Variable para almacenar la temperatura
 
   @override
   void initState() {
     super.initState();
     _mqttProvider.mqttConnect();
+
+    // Escucha los mensajes MQTT y actualiza la temperatura cuando se recibe un mensaje
+    _mqttProvider.messages.listen((message) {
+      try {
+        // Analizar el JSON del mensaje
+        final jsonData = jsonDecode(message);
+        final receivedTemperature = jsonData["temperature"] as double;
+        final receivedHumedad = jsonData["humidity"] as int;
+
+        setState(() {
+          temperature = receivedTemperature;
+          humedad = receivedHumedad;
+        });
+      } catch (e) {
+        print("Error al analizar el mensaje MQTT: $e");
+      }
+    });
   }
 
   @override
@@ -27,37 +49,198 @@ class _MqttScreenState extends State<MqttScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('MQTT Client'),
-      ),
-      body: Column(
-        children: <Widget>[
-          Text('Connection Status: ${_mqttProvider.statusText}'),
+    final theme = Theme.of(context);
 
-          Expanded(
-            child: StreamBuilder<String>(
-              stream: _mqttProvider.messages,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else {
-                  _mqttProvider.receivedMessages.add(snapshot.data!);
-                  return ListView.builder(
-                    itemCount: _mqttProvider.receivedMessages.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(_mqttProvider.receivedMessages[index]),
-                      );
-                    },
-                  );
-                }
-              },
-            ),
+    return Scaffold(
+      backgroundColor: theme.primaryColor,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.menu,
+            color: Colors.indigo,
           ),
+          onPressed: () {},
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.login,
+              color: Colors.blue,
+            ),
+            onPressed: () {},
+          )
         ],
+      ),
+      body: SafeArea(
+        minimum: const EdgeInsets.symmetric(horizontal: 25),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Column(
+              children: [
+                Text(
+                  'Temperature',
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 26),
+                ),
+                Text(
+                  'Living room',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ],
+            ),
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                SleekCircularSlider(
+                  min: 0,
+                  max: 100,
+                  initialValue: temperature,
+                  appearance: CircularSliderAppearance(
+                    size: 280,
+                    startAngle: 140,
+                    angleRange: 260,
+                    customWidths: CustomSliderWidths(
+                      trackWidth: 25,
+                      shadowWidth: 20,
+                      progressBarWidth: 25,
+                      handlerSize: 10,
+                    ),
+                    customColors: CustomSliderColors(
+                      hideShadow: false,
+                      progressBarColor: theme.primaryColor,
+                      trackColor: Colors.grey[300],
+                      dotColor: theme.primaryColor,
+                    ),
+                  ),
+                  innerWidget: (double value) {
+                    return Center(
+                        child: Text(
+                      '${temperature.toStringAsFixed(2)}°C', style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    ));
+                  },
+                  onChange: (double value) {
+                    // Lógica adicional si es necesario
+                  },
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Current humidity',
+                      style: TextStyle(
+                        color: Colors.grey.withAlpha(150),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      '$humedad',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Current temp.',
+                      style: TextStyle(
+                        color: Colors.grey.withAlpha(150),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      '${temperature.toStringAsFixed(2)}°C',
+                      // Usa el valor de temperatura
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 35,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ButtonStyle(
+                      elevation: MaterialStateProperty.all(0),
+                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                      padding: MaterialStateProperty.all(
+                        const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 16,
+                        ),
+                      ),
+                    ),
+                    child: const Text(
+                      'Automatic',
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ButtonStyle(
+                    elevation: MaterialStateProperty.all(0),
+                    backgroundColor: MaterialStateProperty.all(Colors.white),
+                    padding: MaterialStateProperty.all(
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.adjust,
+                    color: Colors.black.withAlpha(175),
+                  ),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ButtonStyle(
+                    elevation: MaterialStateProperty.all(0),
+                    backgroundColor: MaterialStateProperty.all(Colors.white),
+                    padding: MaterialStateProperty.all(
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.airplay,
+                    color: Colors.black.withAlpha(175),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 25,
+            ),
+          ],
+        ),
       ),
     );
   }

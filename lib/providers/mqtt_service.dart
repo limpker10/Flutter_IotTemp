@@ -10,7 +10,7 @@ import 'package:uuid/uuid.dart';
 class MqttService {
   bool _isConnected = false;
   String _statusText = 'Disconnected';
-  String topic = 'esp8266/sub';
+  String topic = 'esp8266/pub';
   final TextEditingController idTextController = TextEditingController();
   final List<String> _receivedMessages = [];
 
@@ -61,6 +61,7 @@ class MqttService {
 
     await _client.connect();
     if (_client.connectionStatus!.state == MqttConnectionState.connected) {
+      onConnected();
       debugPrint("Connected to AWS Successfully!");
 
       _client.subscribe(topic, MqttQos.atMostOnce);

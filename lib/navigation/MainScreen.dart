@@ -20,8 +20,6 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final colors = Theme.of(context).colorScheme;
-
     final screens = [const MotorsView(), const UsersView(),const CircularPage(), const MqttScreen()];
 
     return Scaffold(
@@ -32,38 +30,35 @@ class _MainScreenState extends State<MainScreen> {
       ),
 
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.shifting,
+        type: BottomNavigationBarType.fixed,
         currentIndex: selectedIndex,
         onTap: (value) {
           setState(() {
             selectedIndex = value;
           });
         },
-        elevation: 0,
-        items: [
+        elevation: 1,
+        backgroundColor: Theme.of(context).colorScheme.background,
+        items: const [
           BottomNavigationBarItem(
-            icon: const Icon(Icons.two_wheeler),
-            activeIcon: const Icon(Icons.motorcycle),
+            icon: Icon(Icons.two_wheeler),
+            activeIcon: Icon(Icons.motorcycle),
             label: 'Motors',
-            backgroundColor: colors.primary,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.person_3_outlined),
-            activeIcon: const Icon(Icons.person_3),
+            icon: Icon(Icons.person_3_outlined),
+            activeIcon: Icon(Icons.person_3),
             label: 'Users',
-            backgroundColor: colors.tertiary,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.person_3_outlined),
-            activeIcon: const Icon(Icons.person_3),
+            icon: Icon(Icons.person_3_outlined),
+            activeIcon: Icon(Icons.person_3),
             label: 'Users',
-            backgroundColor: colors.tertiary,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.person_3_outlined),
-            activeIcon: const Icon(Icons.person_3),
+            icon: Icon(Icons.person_3_outlined),
+            activeIcon: Icon(Icons.person_3),
             label: 'Mqtt',
-            backgroundColor: colors.tertiary,
           ),
         ],
       ),
