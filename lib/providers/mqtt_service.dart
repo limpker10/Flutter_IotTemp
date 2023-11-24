@@ -10,7 +10,7 @@ import 'package:uuid/uuid.dart';
 class MqttService {
   bool _isConnected = false;
   String _statusText = 'Disconnected';
-  String topic = 'esp8266/pub';
+  String topic = 'mosquitto/aws';
   final TextEditingController idTextController = TextEditingController();
   final List<String> _receivedMessages = [];
 
