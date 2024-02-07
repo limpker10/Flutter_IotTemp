@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -13,9 +14,9 @@ class MqttService {
   String topic = 'mosquitto/aws';
   final TextEditingController idTextController = TextEditingController();
   final List<String> _receivedMessages = [];
+  int _lastValue = 0;
 
-  final StreamController<String> _messageController =
-  StreamController<String>.broadcast();
+  final StreamController<String> _messageController = StreamController<String>.broadcast();
   Stream<String> get messages => _messageController.stream;
 
   bool get isConnected => _isConnected;
@@ -79,6 +80,17 @@ class MqttService {
     } else {
       return false;
     }
+  }
+  void publishMessage() {
+    String topic = 'aws/sub';
+    _lastValue = _lastValue == 75 ? 0 : 75;
+    var jsonCommand = {
+      "value": "$_lastValue"
+    };
+    String message = json.encode(jsonCommand);
+    final MqttClientPayloadBuilder builder = MqttClientPayloadBuilder();
+    builder.addString(message);
+    _client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
   }
 
   Stream<List<MqttReceivedMessage<MqttMessage>>>? handleReceivedData() {

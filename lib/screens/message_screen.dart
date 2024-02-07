@@ -179,63 +179,46 @@ class _MqttScreenState extends State<MqttScreen> {
             const SizedBox(
               height: 35,
             ),
+
             Row(
               children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ButtonStyle(
-                      elevation: MaterialStateProperty.all(0),
-                      backgroundColor: MaterialStateProperty.all(Colors.white),
-                      padding: MaterialStateProperty.all(
-                        const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 16,
+                Expanded( // Expande el widget para llenar el espacio horizontal disponible
+                  child: Align(
+                    alignment: Alignment.center, // Alinea el botón al centro horizontalmente
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _mqttProvider.publishMessage();
+                      },
+                      style: ButtonStyle(
+                        elevation: MaterialStateProperty.all(0),
+                        // Define el color de fondo para diferentes estados
+                        backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                          if (states.contains(MaterialState.pressed)) {
+                            return Colors.blue; // Color cuando el botón está presionado
+                          }
+                          return Colors.white; // Color por defecto
+                        }),
+                        padding: MaterialStateProperty.all(
+                          const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                         ),
+                        overlayColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                          if (states.contains(MaterialState.pressed)) {
+                            return Colors.blue.withOpacity(0.5); // Color de la "sombra" cuando está presionado
+                          }
+                          // Por defecto no aplicar color adicional
+                          return Colors.transparent;
+                        }),
+                      ),
+                      child: Icon(
+                        Icons.airplay,
+                        color: Colors.black.withAlpha(175),
                       ),
                     ),
-                    child: const Text(
-                      'Automatic',
-                      style: TextStyle(color: Colors.black, fontSize: 16),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ButtonStyle(
-                    elevation: MaterialStateProperty.all(0),
-                    backgroundColor: MaterialStateProperty.all(Colors.white),
-                    padding: MaterialStateProperty.all(
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.adjust,
-                    color: Colors.black.withAlpha(175),
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ButtonStyle(
-                    elevation: MaterialStateProperty.all(0),
-                    backgroundColor: MaterialStateProperty.all(Colors.white),
-                    padding: MaterialStateProperty.all(
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.airplay,
-                    color: Colors.black.withAlpha(175),
                   ),
                 ),
               ],
             ),
+
             const SizedBox(
               height: 25,
             ),

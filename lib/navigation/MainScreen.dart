@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../providers//mqtt_service.dart';
-import '../screens/circular_screen.dart';
 import '../screens/message_screen.dart';
-import '../screens/motors_view.dart';
-import '../screens/users_view.dart';
+import '../screens/histories_view.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -20,7 +16,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final screens = [const MotorsView(), const UsersView(),const CircularPage(), const MqttScreen()];
+    final screens = [const MqttScreen(),const HistoryView()];
 
     return Scaffold(
 
@@ -40,25 +36,15 @@ class _MainScreenState extends State<MainScreen> {
         elevation: 1,
         backgroundColor: Theme.of(context).colorScheme.background,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.two_wheeler),
-            activeIcon: Icon(Icons.motorcycle),
-            label: 'Motors',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_3_outlined),
-            activeIcon: Icon(Icons.person_3),
-            label: 'Users',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_3_outlined),
-            activeIcon: Icon(Icons.person_3),
-            label: 'Users',
-          ),
+
           BottomNavigationBarItem(
             icon: Icon(Icons.person_3_outlined),
             activeIcon: Icon(Icons.person_3),
             label: 'Mqtt',
+          ),BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart),
+            activeIcon: Icon(Icons.bar_chart),
+            label: 'History',
           ),
         ],
       ),
